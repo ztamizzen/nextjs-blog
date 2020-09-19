@@ -4,8 +4,16 @@ import Layout, { siteTitle } from "../components/layout";
 import Date from "../components/date";
 import utilStyles from "../styles/utils.module.css";
 import { getSortedPostsData } from "../lib/posts";
+// import fetch from "node-fetch";
+import { GetStaticProps } from "next";
 
-export default function Home({ allPostsData }) {
+interface PostData {
+  date: string;
+  title: string;
+  id: string;
+}
+
+export default function Home({ allPostsData }: { allPostsData: PostData[] }) {
   console.log(allPostsData);
   return (
     <Layout home>
@@ -15,15 +23,8 @@ export default function Home({ allPostsData }) {
       <section className={utilStyles.headingMd}>
         <p>
           20 years a developer, 21 years a father, 28 years working for a
-          pension.
+          pension. Learning Next for work, and it's quite nice. 😄
         </p>
-        <p>
-          (This is a sample website - you’ll be building a site like this on{" "}
-          <a href="https://nextjs.org/learn">our Next.js tutorial</a>.)
-        </p>
-        <Link href="/posts/first-post">
-          <a>First post&hellip;</a>
-        </Link>
       </section>
       <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>
         <h2 className={utilStyles.headingLg}>Blog</h2>
@@ -45,7 +46,15 @@ export default function Home({ allPostsData }) {
   );
 }
 
-export async function getStaticProps() {
+export const getStaticProps: GetStaticProps = async () => {
+  /* const res = await fetch("https://jsonplaceholder.typicode.com/posts");
+  const posts = await res.json();
+  console.log('posts', posts);
+  return {
+    props: {
+      posts,
+    },
+  }; */
   const allPostsData = getSortedPostsData();
   return { props: { allPostsData } };
-}
+};
