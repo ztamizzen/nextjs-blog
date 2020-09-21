@@ -3,12 +3,39 @@ import path from "path";
 import matter from "gray-matter";
 import remark from "remark";
 import html from "remark-html";
+import fetch from "node-fetch";
 
 const postsDirectory = path.join(process.cwd(), "posts");
 
 interface ResultData {
   date: string;
   title: string;
+}
+
+export async function getExternalData() {
+  const response = await fetch("https://jsonplaceholder.typicode.com/posts");
+  const json = await response.json();
+  return json;
+}
+
+export async function getExternalPostIds() {
+  const response = await fetch("https://jsonplaceholder.typicode.com/posts");
+  const json = await response.json();
+  return json.map(({ _, id }) => {
+    return {
+      params: {
+        id: `${id}`,
+      },
+    };
+  });
+}
+
+export async function getExternalPost(id) {
+  const response = await fetch(
+    `https://jsonplaceholder.typicode.com/posts/${id}`
+  );
+  const json = await response.json();
+  return json;
 }
 
 export function getSortedPostsData() {
@@ -42,6 +69,7 @@ export function getAllPostIds() {
     };
   });
 }
+
 export async function getPostData(id) {
   const fullPath = path.join(postsDirectory, `${id}.md`);
   const fileContents = fs.readFileSync(fullPath, "utf8");

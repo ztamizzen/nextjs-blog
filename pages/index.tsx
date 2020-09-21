@@ -3,7 +3,7 @@ import Link from "next/link";
 import Layout, { siteTitle } from "../components/layout";
 import Date from "../components/date";
 import utilStyles from "../styles/utils.module.css";
-import { getSortedPostsData } from "../lib/posts";
+import { getSortedPostsData, getExternalData } from "../lib/posts";
 // import fetch from "node-fetch";
 import { GetStaticProps } from "next";
 
@@ -13,8 +13,20 @@ interface PostData {
   id: string;
 }
 
-export default function Home({ allPostsData }: { allPostsData: PostData[] }) {
-  console.log(allPostsData);
+interface ExternalData {
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
+}
+
+export default function Home({
+  allPostsData,
+  externalData,
+}: {
+  allPostsData: PostData[];
+  externalData: ExternalData[];
+}) {
   return (
     <Layout home>
       <Head>
@@ -42,19 +54,26 @@ export default function Home({ allPostsData }: { allPostsData: PostData[] }) {
           ))}
         </ul>
       </section>
+      <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>
+        <h2 className={utilStyles.headingLg}>Mock</h2>
+        <ul className={utilStyles.list}>
+          {externalData &&
+            externalData.map(({ userId, id, title, body }) => (
+              <li className={utilStyles.listItem} key={id}>
+                <Link href={"external/" + id}>
+                  <a>{title}</a>
+                </Link>
+                <p>{body}</p>
+              </li>
+            ))}
+        </ul>
+      </section>
     </Layout>
   );
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  /* const res = await fetch("https://jsonplaceholder.typicode.com/posts");
-  const posts = await res.json();
-  console.log('posts', posts);
-  return {
-    props: {
-      posts,
-    },
-  }; */
-  const allPostsData = getSortedPostsData();
-  return { props: { allPostsData } };
+  const externalData: ExternalData[] = await getExternalData();
+  const allPostsData: PostData[] = getSortedPostsData();
+  return { props: { allPostsData, externalData } };
 };

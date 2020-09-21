@@ -17,7 +17,7 @@ export default function Post({ postData }: { postData: PostData }) {
       <Head>
         <title>{postData.title}</title>
       </Head>
-      <h1 className={utilStyles.headingXL}>{postData.title}</h1>
+      <h1 className={utilStyles.headingXl}>{postData.title}</h1>
       <div className={utilStyles.lightText}>
         <Date dateString={postData.date} />
       </div>
@@ -32,7 +32,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     paths,
     fallback: false,
   };
-}
+};
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const postData = await getPostData(params.id as string);
@@ -41,4 +41,4 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       postData,
     },
   };
-}
+};
